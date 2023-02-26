@@ -5,13 +5,12 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.qa_scooter.Courier;
-import ru.qa_scooter.CourierClient;
-import ru.qa_scooter.CourierCredentials;
+import ru.qa_scooter.api.client.CourierClient;
+import ru.qa_scooter.api.model.Courier;
+import ru.qa_scooter.api.util.CourierCredentials;
 
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertTrue;
 
 public class CreateCourierTest {
 
@@ -19,89 +18,35 @@ public class CreateCourierTest {
     private int courierId;
 
     @Before
-    public void setup(){
+    public void setup() {
         courierClient = new CourierClient();
     }
 
     @After
-    public void tearDown(){
-        if (courierId > 0){
+    public void tearDown() {
+        if (courierId > 0) {
             courierClient.delete(courierId);
         }
     }
 
     @Test
-    @DisplayName("Successful creation of a courier")
-    @Description("Успешное создание курьера")
-    public void testSuccessfulCreationCourier(){
+    @DisplayName("Checking of the response body and the status code on successful creation of the courier")
+    @Description("Успешное создание курьера, проверка тела и кода ответа")
+    public void testSuccessfulCreationCourierCheckingBodyTrue() {
         Courier courier = Courier.getRandom();
-
-        boolean isCreated = courierClient.createResponse(courier)
-                .assertThat()
-                .statusCode(SC_CREATED)
-                .extract()
-                .path("ok");
-
-        assertTrue("Курьер не создан", isCreated);
-
-        courierId = courierClient.loginResponse(CourierCredentials.getCourierCredentials(courier))
-                .assertThat()
-                .statusCode(SC_OK)
-                .extract()
-                .path("id");
-    }
-
-    @Test
-    @DisplayName("Checking the status code when the courier is successfully created")
-    @Description("Проверка кода ответа при успешном создании курьера")
-    public void testSuccessfulCreationCourierCheckingStatusCode(){
-        Courier courier = Courier.getRandom();
-
         ValidatableResponse createResponse = courierClient.createResponse(courier);
-        createResponse.statusCode(SC_CREATED);
+        courierId = courierClient.loginResponse(CourierCredentials.getCourierCredentials(courier)).extract().path("id");
 
-        courierId = courierClient.loginResponse(CourierCredentials.getCourierCredentials(courier))
-                .assertThat()
-                .statusCode(SC_OK)
-                .extract()
-                .path("id");
-    }
-
-    @Test
-    @DisplayName("Checking of the response body upon successful creation of the courier")
-    @Description("Проверка тела ответа при успешном создании курьера")
-    public void testSuccessfulCreationCourierCheckingBodyTrue(){
-        Courier courier = Courier.getRandom();
-
-        ValidatableResponse createResponse = courierClient.createResponse(courier);
-        createResponse.assertThat().body("ok", equalTo(true));
-
-        courierId = courierClient.loginResponse(CourierCredentials.getCourierCredentials(courier))
-                .assertThat()
-                .statusCode(SC_OK)
-                .extract()
-                .path("id");
+        createResponse.statusCode(SC_CREATED).and().assertThat().body("ok", equalTo(true));
     }
 
     @Test
     @DisplayName("Cannot create two identical couriers")
     @Description("Нельзя создать двух одинаковых курьеров")
-    public void testCannotCreateTwoIdenticalCouriers(){
+    public void testCannotCreateTwoIdenticalCouriers() {
         Courier courier = Courier.getRandom();
-
-        boolean isCreatedFirstCourier = courierClient.createResponse(courier)
-                .assertThat()
-                .statusCode(SC_CREATED)
-                .extract()
-                .path("ok");
-
-        assertTrue("Курьер не создан", isCreatedFirstCourier);
-
-        courierId = courierClient.loginResponse(CourierCredentials.getCourierCredentials(courier))
-                .assertThat()
-                .statusCode(SC_OK)
-                .extract()
-                .path("id");
+        courierClient.createResponse(courier);
+        courierId = courierClient.loginResponse(CourierCredentials.getCourierCredentials(courier)).extract().path("id");
 
         ValidatableResponse createResponse = courierClient.createResponse(courier);
         createResponse.statusCode(SC_CONFLICT);

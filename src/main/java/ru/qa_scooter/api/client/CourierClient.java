@@ -1,20 +1,20 @@
-package ru.qa_scooter;
+package ru.qa_scooter.api.client;
 
 import io.qameta.allure.Step;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import ru.qa_scooter.api.model.Courier;
+import ru.qa_scooter.api.util.CourierCredentials;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
 
-public class CourierClient extends RestAssuredClient{
+public class CourierClient extends RestAssuredClient {
 
     public static final String COURIER_PATH = "/api/v1/courier/";
 
     @Step("Запрос на создание курьера")
-    public ValidatableResponse createResponse(Courier courier){
-        return  given()
+    public ValidatableResponse createResponse(Courier courier) {
+        return given()
                 .spec(getBaseSpec())
                 .body(courier)
                 .when()
@@ -23,7 +23,7 @@ public class CourierClient extends RestAssuredClient{
     }
 
     @Step("Запрос на авторизацию курьера")
-    public ValidatableResponse loginResponse (CourierCredentials courierCredentials){
+    public ValidatableResponse loginResponse(CourierCredentials courierCredentials) {
         return given()
                 .spec(getBaseSpec())
                 .body(courierCredentials)
@@ -33,7 +33,7 @@ public class CourierClient extends RestAssuredClient{
     }
 
     @Step("Удаляем курьера")
-    public boolean delete (int courierId){
+    public boolean delete(int courierId) {
         return given()
                 .spec(getBaseSpec())
                 .when()
