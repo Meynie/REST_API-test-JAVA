@@ -32,7 +32,7 @@ public class CreateCourierTest {
     @Test
     @DisplayName("Checking of the response body and the status code on successful creation of the courier")
     @Description("Успешное создание курьера, проверка тела и кода ответа")
-    public void testSuccessfulCreationCourierCheckingBodyTrue() {
+    public void testSuccessfulCreationCourierCheckingBodyAndStatusCode() {
         Courier courier = Courier.getRandom();
         ValidatableResponse createResponse = courierClient.createResponse(courier);
         courierId = courierClient.loginResponse(CourierCredentials.getCourierCredentials(courier)).extract().path("id");
