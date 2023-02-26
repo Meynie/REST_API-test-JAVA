@@ -96,7 +96,7 @@ public class LoginCourierTest {
     @Test
     @DisplayName("Authorization without specifying a password")
     @Description("Авторизация без указания пароля")
-    public void AuthorizationWithoutSpecifyingPassword(){
+    public void AuthorizationWithoutSpecifyingPassword() {
         Courier courier = Courier.getRandom();
 
         courierClient.createResponse(courier);

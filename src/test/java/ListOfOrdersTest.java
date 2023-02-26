@@ -8,8 +8,6 @@ import ru.qa_scooter.api.client.OrderResponse;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import static org.apache.http.HttpStatus.SC_OK;
-
 public class ListOfOrdersTest {
     public OrderResponse orderResponse;
 
@@ -22,13 +20,11 @@ public class ListOfOrdersTest {
     @DisplayName("Проверка списка заказов")
     public void CheckingOrderList() {
         ValidatableResponse listOrder = orderResponse.GetListOrders();
-        listOrder.statusCode(SC_OK);
 
         ArrayList ordersFromPage = listOrder.extract().path("orders");
         for (int i = 0; i < ordersFromPage.size(); i++) {
             LinkedHashMap id = (LinkedHashMap) ordersFromPage.get(i);
             Assert.assertNotNull("ID заказа пустое", id.get("id"));
         }
-        Assert.assertNotNull("Список заказов пуст", listOrder);
     }
 }

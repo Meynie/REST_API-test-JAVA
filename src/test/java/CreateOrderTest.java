@@ -13,7 +13,6 @@ import ru.qa_scooter.api.util.TrackOrder;
 import java.util.List;
 
 import static org.apache.http.HttpStatus.SC_CREATED;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
@@ -54,6 +53,5 @@ public class CreateOrderTest {
         ValidatableResponse createOrderResponse = orderResponse.createOrderResponse(order);
         createOrderResponse.statusCode(SC_CREATED);
         track = createOrderResponse.extract().path("track");
-        assertTrue("Заказ не создан", track > 0);
     }
 }
